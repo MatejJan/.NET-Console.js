@@ -1,30 +1,56 @@
-# .NET-Console.js
+# .NET Console.js
 
 .NET Console.js is a class library that adds Console class support to [Bridge.NET](https://bridge.net).
+
+## Supported properties and methods
+
+The current version implements a minimal selection of properties:
+
+* `BackgroundColor`
+* `BufferHeight` (read-only)
+* `BufferWidth` (read-only)
+* `CursorLeft`
+* `CursorTop`
+* `CursorVisible` (read-only)
+* `ForegroundColor`
+* `WindowWidth` (read-only)
+* `WindowHeight` (read-only)
+
+… and methods:
+
+* `Clear`
+* `ReadKey`
+* `ReadLine`
+* `ResetColor`
+* `SetCursorPosition`
+* `Write`
+* `WriteLine`
+
+The size of the console is the default of 80 by 24 characters (but it can be easily modified by changing the appropriate variables in the `dotnetconsole.main.js` and `dotnetconsole.worker.js` files once you download them).
 
 ## Instructions
 
 ### 1. Compiling your application to JavaScript
 
-First you need to compile your console application with Bridge.NET. Follow [their instructions](https://bridge.net/introduction/getting_started/) to create a new Bridge.NET Class Library and add all your code to the project.
+First you need to compile your console application with Bridge.NET. Follow [their instructions](https://bridge.net/introduction/getting_started/) to create a new Bridge.NET Class Library and add all your console application code to the project.
 
-Download DotNetConsoleJS.dll from this repository and add it as a reference to the project. In classes where you are using the Console class, add the following using statements:
+Download `DotNetConsoleJS.dll` from this repository and add it as a reference to your project. In files where you are using Console classes, add the following using statements:
 
 ```
 using DotNetConsoleJS;
 using Console = DotNetConsoleJS.Console;
 ```
 
-The `Console.ReadLine()` and `Console.ReadKey()` calls require asynchronous execution and need to have the `await` keyword before them.
+The `Console.ReadLine()` and `Console.ReadKey()` calls require asynchronous execution, so you will need to modify your code and add the `await` keyword before them.
 
 ```
 string input = await Console.ReadLine();
 ConsoleKeyInfo keyInfo = await Console.ReadKey();
 ```
 
-In turn you will need to make the methods where you're using `await` into asynchronous methods returning `Task` or `Task<T>` instead of `void` or `T`. For more information on asynchronous execution in C#, consult the [Asynchronous Programming](https://bridge.net/introduction/asynchronous_programming/) page of Bridge.NET.
+In turn you will need to make the methods where you're using `await` into `async` methods returning `Task` or `Task<T>` instead of `void` or `T`. For more information on asynchronous execution, consult the [Asynchronous Programming](https://bridge.net/introduction/asynchronous_programming/) page of Bridge.NET.
 
-Other changes to your code might be necessary since the Bridge.NET implementation of .NET doesn't support all methods.
+Other changes to your code might be necessary since the Bridge.NET implementation of .NET doesn't support all methods. Similarly, .NET Console.js does not implement all Console features (see supported properties and methods section above).
 
 When your code is without errors, building the project will generate a javascript file with the name of your project, as well as the `bridge.js` library.
 
@@ -32,7 +58,7 @@ When your code is without errors, building the project will generate a javascrip
 
 Create an HTML file in a folder of your choice and copy both the `.js` file of your console app and `bridge.js` to the folder. You will also need the three `dotnetconsole` files from this repository downloaded there.
 
-Now include the top and main libraries in your html like so:
+You need to include the root and main libraries in your HTML like so:
 
 ```
 <html>
@@ -49,9 +75,10 @@ Now include the top and main libraries in your html like so:
 </html>
 ```
 
-Your .js file will run in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), so you also need to import the top and worker libraries to the javascript file of your app.
+Your `.js` file will run in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), so you also need to import the root and worker libraries to the javascript file of your app.
 
 Add this line to the top of the file:
+
 ```
 importScripts('bridge.js', 'dotnetconsole.js', 'dotnetconsole.worker.js');
 ```
@@ -137,7 +164,7 @@ html.inactive .cursor::after {
 .background-15 { background-color: #e5e5e5; }
 ```
 
-This should be it! Enjoy running your .NET console apps online!
+This should be it! Enjoy running your .NET console apps online.
 
 ## Example projects
 
